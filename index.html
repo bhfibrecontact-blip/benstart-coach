@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BenStart Coach — Perte de poids pour débutants</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #f97316;
+      --red: #e8534a;
+      --dark: #0f0e0c;
+      --dark2: #1a1814;
+      --cream: #f7f3ed;
+      --text: #1a1814;
+      --muted: #7a6f65;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15,14,12,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(249,115,22,0.15);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(249,115,22,0.35);
+    }
+    .nav-brand { font-family: 'Playfair Display', serif; font-weight: 800; font-size: 17px; color: #fff; }
+    .nav-brand span { color: var(--orange); }
+    .nav-cta {
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 10px 22px; font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 4px 14px rgba(249,115,22,0.35);
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,0.45); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: var(--dark);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 15% 50%, rgba(249,115,22,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(232,83,74,0.08) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 100%, rgba(249,115,22,0.06) 0%, transparent 50%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
+      background-image: linear-gradient(rgba(249,115,22,0.5) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(249,115,22,0.5) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto; position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 20px; padding: 6px 16px; margin-bottom: 24px;
+      font-size: 12px; color: var(--orange); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 58px); font-weight: 900;
+      color: #fff; line-height: 1.1; margin-bottom: 20px; letter-spacing: -0.02em;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero-sub { font-size: 17px; color: #8a8070; line-height: 1.7; margin-bottom: 36px; max-width: 440px; }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-primary {
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 15px 30px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 6px 20px rgba(249,115,22,0.4);
+      transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(249,115,22,0.5); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06); color: #ccc;
+      border: 1.5px solid rgba(255,255,255,0.12); border-radius: 12px;
+      padding: 15px 28px; font-size: 15px; font-weight: 500;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+    .hero-stats { display: flex; gap: 32px; }
+    .hero-stat-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; color: var(--orange); }
+    .hero-stat-lbl { font-size: 12px; color: #5a5248; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+    /* HERO CARD */
+    .hero-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px; padding: 28px; backdrop-filter: blur(10px);
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .hero-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .hero-card-avatar {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(249,115,22,0.4);
+    }
+    .hero-card-name { font-weight: 700; color: #fff; font-size: 15px; }
+    .hero-card-role { font-size: 12px; color: #6a6258; }
+    .chat-bubble {
+      border-radius: 16px; padding: 12px 16px; margin-bottom: 10px;
+      font-size: 14px; line-height: 1.6; max-width: 85%;
+    }
+    .chat-user { background: rgba(249,115,22,0.15); color: #e8c090; margin-left: auto; border-radius: 16px 4px 16px 16px; }
+    .chat-bot { background: rgba(255,255,255,0.07); color: #d4cfc8; border-radius: 4px 16px 16px 16px; }
+    .typing { display: flex; gap: 4px; align-items: center; padding: 12px 16px; }
+    .typing span {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--orange);
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.18s; }
+    .typing span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity: 0.3; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+    /* SECTIONS */
+    section { padding: 100px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; color: var(--text); line-height: 1.15; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px; }
+
+    /* MICRO NICHE */
+    .niche-section { background: var(--dark); }
+    .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; }
+    .niche-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px; padding: 28px; transition: all 0.25s;
+    }
+    .niche-card:hover { border-color: rgba(249,115,22,0.35); background: rgba(249,115,22,0.06); transform: translateY(-4px); }
+    .niche-icon { font-size: 32px; margin-bottom: 14px; }
+    .niche-title { font-weight: 700; color: #fff; font-size: 16px; margin-bottom: 8px; }
+    .niche-desc { font-size: 14px; color: #6a6258; line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; margin-top: 56px; }
+    .step {
+      text-align: center; padding: 32px 20px;
+      background: #fff; border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1.5px solid #ede8e0; transition: all 0.25s;
+    }
+    .step:hover { box-shadow: 0 8px 32px rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.3); transform: translateY(-4px); }
+    .step-num {
+      width: 52px; height: 52px; border-radius: 16px; margin: 0 auto 18px;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif; font-weight: 800; font-size: 22px; color: #fff;
+      box-shadow: 0 6px 16px rgba(249,115,22,0.35);
+    }
+    .step-title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* PRICING */
+    .pricing-section { background: #f0ece6; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; margin-top: 56px; }
+    .pricing-card {
+      background: #fff; border-radius: 24px; padding: 36px 28px;
+      border: 2px solid #e8e2d8; transition: all 0.25s; position: relative;
+    }
+    .pricing-card.featured {
+      background: var(--dark); border-color: var(--orange);
+      box-shadow: 0 12px 40px rgba(249,115,22,0.2);
+    }
+    .pricing-card:hover { transform: translateY(-6px); }
+    .popular-badge {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 4px 16px; border-radius: 20px;
+    }
+    .plan-name { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 10px; }
+    .plan-price { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+    .featured .plan-price { color: #fff; }
+    .plan-period { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+    .featured .plan-period { color: #6a6258; }
+    .plan-features { list-style: none; margin-bottom: 28px; }
+    .plan-features li { font-size: 14px; padding: 8px 0; border-bottom: 1px solid #f0ece6; display: flex; align-items: center; gap: 8px; }
+    .featured .plan-features li { color: #ccc; border-bottom-color: rgba(255,255,255,0.07); }
+    .plan-features li::before { content: "✓"; color: var(--orange); font-weight: 700; }
+    .plan-btn {
+      width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; border: none; transition: all 0.2s;
+    }
+    .plan-btn-outline { background: transparent; border: 2px solid #e8e2d8; color: var(--text); }
+    .plan-btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+    .plan-btn-filled { background: linear-gradient(135deg, #e8534a, #f97316); color: #fff; box-shadow: 0 4px 16px rgba(249,115,22,0.35); }
+    .plan-btn-filled:hover { box-shadow: 0 8px 24px rgba(249,115,22,0.5); transform: translateY(-2px); }
+
+    /* CTA */
+    .cta-section {
+      background: var(--dark); text-align: center; padding: 100px 24px;
+    }
+    .cta-section h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 48px); font-weight: 900; color: #fff; margin-bottom: 16px; }
+    .cta-section h2 span { color: var(--orange); }
+    .cta-section p { color: #6a6258; font-size: 16px; margin-bottom: 36px; }
+
+    /* FOOTER */
+    footer {
+      background: #0a0908; padding: 40px 24px;
+      border-top: 1px solid rgba(255,255,255,0.05); text-align: center;
+    }
+    footer p { font-size: 13px; color: #3a3530; }
+    footer span { color: var(--orange); }
+
+    /* WIDGET */
+    #benstart-widget-btn {
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+      width: 60px; height: 60px; border-radius: 18px;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      border: none; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(249,115,22,0.5);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s; animation: pulse-btn 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-btn {
+      0%,100% { box-shadow: 0 8px 28px rgba(249,115,22,0.5); }
+      50% { box-shadow: 0 8px 40px rgba(249,115,22,0.75); }
+    }
+    #benstart-widget-btn:hover { transform: scale(1.1); }
+    #benstart-widget-panel {
+      position: fixed; bottom: 100px; right: 28px; z-index: 9998;
+      width: 370px; height: 520px;
+      background: #f7f3ed; border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      display: none; flex-direction: column; overflow: hidden;
+      border: 1.5px solid #e8e2d8;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    #benstart-widget-panel.open { display: flex; }
+    .widget-header {
+      background: var(--dark);
+      padding: 16px 18px; display: flex; align-items: center; gap: 10px;
+    }
+    .widget-avatar {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 10px rgba(249,115,22,0.4); flex-shrink: 0;
+    }
+    .widget-name { font-weight: 700; color: #fff; font-size: 14px; }
+    .widget-status { font-size: 11px; color: #6a6258; }
+    .widget-close {
+      margin-left: auto; background: none; border: none; color: #4a4540;
+      cursor: pointer; font-size: 20px; line-height: 1; padding: 2px;
+    }
+    .widget-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .widget-msg { max-width: 82%; font-size: 13.5px; line-height: 1.65; padding: 11px 14px; border-radius: 16px; }
+    .widget-msg.bot { background: #fff; color: #2a2520; border: 1.5px solid #e8e2d8; border-radius: 4px 16px 16px 16px; align-self: flex-start; }
+    .widget-msg.user { background: var(--dark); color: #e8d8c0; border-radius: 16px 4px 16px 16px; align-self: flex-end; }
+    .widget-msg.bot strong { color: var(--orange); font-size: 11px; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .widget-typing { display: flex; gap: 4px; align-items: center; padding: 11px 14px; background: #fff; border: 1.5px solid #e8e2d8; border-radius: 4px 16px 16px 16px; width: fit-content; }
+    .widget-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: bounce 1.2s ease-in-out infinite; }
+    .widget-typing span:nth-child(2) { animation-delay: 0.18s; }
+    .widget-typing span:nth-child(3) { animation-delay: 0.36s; }
+    .widget-input-area { padding: 12px; border-top: 1.5px solid #e8e2d8; display: flex; gap: 8px; background: #fff; }
+    .widget-input {
+      flex: 1; border: 1.5px solid #e8e2d8; border-radius: 10px;
+      padding: 10px 14px; font-size: 13.5px; font-family: 'DM Sans', sans-serif;
+      outline: none; background: var(--cream); color: var(--text); resize: none;
+    }
+    .widget-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+    .widget-send {
+      width: 40px; height: 40px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, #e8534a, #f97316);
+      color: #fff; cursor: pointer; font-size: 16px;
+      box-shadow: 0 3px 10px rgba(249,115,22,0.35); transition: all 0.2s; flex-shrink: 0;
+    }
+    .widget-send:hover { transform: scale(1.08); }
+    .widget-send:disabled { background: #e8e2d8; box-shadow: none; cursor: not-allowed; }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      #benstart-widget-panel { width: calc(100vw - 32px); right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="9" r="6" fill="white"/>
+          <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+          <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+          <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+          <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+          <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+          <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+          <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+        </svg>
+      </div>
+      <span class="nav-brand">BenStart <span>Coach</span></span>
+    </a>
+    <button class="nav-cta" onclick="openWidget()">Essayer gratuitement</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🎯 Micro-niche spécialisée · Débutants</div>
+      <h1>Perdez du poids<br/><span>sans vous blesser</span></h1>
+      <p class="hero-sub">Votre coach IA personnel disponible 24h/24. Programmes sur mesure, nutrition simple et suivi hebdomadaire pour les débutants qui veulent une transformation durable.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary" onclick="openWidget()">💬 Parler au coach</a>
+        <a href="#how" class="btn-secondary">Voir comment ça marche →</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">0.5-1kg</div>
+          <div class="hero-stat-lbl">perte/semaine réaliste</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">12 sem</div>
+          <div class="hero-stat-lbl">programme complet</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">24h/24</div>
+          <div class="hero-stat-lbl">disponible</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-header">
+        <div class="hero-card-avatar">
+          <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="9" r="6" fill="white"/>
+            <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+            <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+            <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+            <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+            <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+            <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+            <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+          </svg>
+        </div>
+        <div>
+          <div class="hero-card-name">BenStart Coach</div>
+          <div class="hero-card-role">Coach IA · En ligne maintenant</div>
+        </div>
+      </div>
+      <div class="chat-bubble chat-user">Bonjour, j'ai 15kg à perdre mais je n'ai jamais fait de sport 😅</div>
+      <div class="chat-bubble chat-bot">Pas de panique ! C'est exactement pour vous que je suis là. Commençons par 3 séances de 30 min par semaine. Votre corps va adorer ça 💪</div>
+      <div class="chat-bubble chat-user">Et pour manger, je dois suivre un régime strict ?</div>
+      <div style="background:rgba(255,255,255,0.07);border-radius:4px 16px 16px 16px;width:fit-content;">
+        <div class="typing"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MICRO NICHE -->
+<section class="niche-section">
+  <div class="section-inner">
+    <div class="section-label">🎯 Notre micro-niche</div>
+    <h2 class="section-title" style="color:#fff;">Conçu spécifiquement<br/>pour <span style="color:var(--orange)">vous</span></h2>
+    <p class="section-sub" style="color:#6a6258;">Pas un coach généraliste. Un expert ultra-spécialisé dans un seul profil : les débutants qui veulent perdre du poids durablement.</p>
+    <div class="niche-grid">
+      <div class="niche-card">
+        <div class="niche-icon">🧑‍💼</div>
+        <div class="niche-title">25 à 45 ans</div>
+        <div class="niche-desc">Actifs ou sédentaires qui manquent de temps mais veulent changer leur corps.</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">⚖️</div>
+        <div class="niche-title">10 à 30kg à perdre</div>
+        <div class="niche-desc">Ni les régimes extrêmes, ni les programmes pour athlètes. Juste ce qu'il faut.</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">🛡️</div>
+        <div class="niche-title">Peur de se blesser</div>
+        <div class="niche-desc">Chaque exercice est adapté à votre niveau. La sécurité avant tout.</div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">💔</div>
+        <div class="niche-title">Déjà échoué</div>
+        <div class="niche-desc">Vous avez essayé des régimes qui ne tiennent pas. On fait différemment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-label">⚡ Comment ça marche</div>
+    <h2 class="section-title">Simple comme<br/>une conversation</h2>
+    <p class="section-sub">Pas d'application à télécharger. Pas de formulaire compliqué. Juste un chat.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Décrivez votre situation</div>
+        <div class="step-desc">Dites-nous votre poids, votre objectif et votre niveau. Le coach s'adapte à vous.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Recevez votre programme</div>
+        <div class="step-desc">Un plan d'entraînement et nutrition personnalisé en quelques secondes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Posez vos questions</div>
+        <div class="step-desc">À n'importe quelle heure. Fringales, douleurs, motivation — le coach répond.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Suivez vos progrès</div>
+        <div class="step-desc">Check-in hebdomadaire et ajustement du programme selon vos résultats.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-inner">
+    <div class="section-label">💰 Tarifs</div>
+    <h2 class="section-title">Choisissez votre formule</h2>
+    <p class="section-sub">Sans engagement. Annulez à tout moment.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">49€</div>
+        <div class="plan-period">/mois</div>
+        <ul class="plan-features">
+          <li>Programme débutant 12 semaines</li>
+          <li>500 messages/mois</li>
+          <li>Conseils nutrition de base</li>
+          <li>Support par email</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline" onclick="openWidget()">Commencer</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="popular-badge">⭐ Populaire</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" style="color:#f97316;">99€</div>
+        <div class="plan-period">/mois</div>
+        <ul class="plan-features">
+          <li>Programme personnalisé complet</li>
+          <li>Messages illimités 24h/24</li>
+          <li>Plan nutrition détaillé + recettes</li>
+          <li>Suivi hebdomadaire</li>
+          <li>Support WhatsApp prioritaire</li>
+        </ul>
+        <button class="plan-btn plan-btn-filled" onclick="openWidget()">Essayer 7 jours gratuit</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Agence</div>
+        <div class="plan-price">249€</div>
+        <div class="plan-period">/mois</div>
+        <ul class="plan-features">
+          <li>5 agents personnalisés</li>
+          <li>Marque blanche (votre logo)</li>
+          <li>Widget pour votre site web</li>
+          <li>Dashboard clients</li>
+          <li>Intégration WhatsApp</li>
+        </ul>
+        <button class="plan-btn plan-btn-outline" onclick="openWidget()">Nous contacter</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-inner">
+    <h2>Prêt à commencer votre<br/><span>transformation ?</span></h2>
+    <p>Votre premier message est gratuit. Sans carte bancaire.</p>
+    <a href="#" class="btn-primary" onclick="openWidget(); return false;" style="display:inline-flex;">💬 Parler à BenStart Coach maintenant</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span>BenStart Coach</span> · Agent IA spécialisé perte de poids pour débutants · Tous droits réservés</p>
+</footer>
+
+<!-- WIDGET BOUTON -->
+<button id="benstart-widget-btn" onclick="toggleWidget()" title="Parler au coach">
+  <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+    <circle cx="32" cy="9" r="6" fill="white"/>
+    <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+    <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+    <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+    <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+    <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+    <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+    <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+  </svg>
+</button>
+
+<!-- WIDGET PANEL -->
+<div id="benstart-widget-panel">
+  <div class="widget-header">
+    <div class="widget-avatar">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="9" r="6" fill="white"/>
+        <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+        <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+        <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+        <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+        <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+        <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+        <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+      </svg>
+    </div>
+    <div>
+      <div class="widget-name">BenStart Coach</div>
+      <div class="widget-status">🟢 En ligne · Répond en quelques secondes</div>
+    </div>
+    <button class="widget-close" onclick="toggleWidget()">×</button>
+  </div>
+  <div class="widget-messages" id="widget-messages">
+    <div class="widget-msg bot">
+      <strong>BenStart Coach</strong>
+      Bonjour ! 👋 Je suis votre coach IA spécialisé perte de poids pour débutants. Dites-moi votre objectif et on commence ensemble !
+    </div>
+  </div>
+  <div class="widget-input-area">
+    <textarea class="widget-input" id="widget-input" rows="1" placeholder="Votre question..." onkeydown="handleWidgetKey(event)"></textarea>
+    <button class="widget-send" id="widget-send-btn" onclick="sendWidgetMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+  const SYSTEM_PROMPT = `Tu es BenStart Coach, un agent IA expert en perte de poids pour débutants absolus.
+Ta micro-niche : adultes 25-45 ans, 10-30kg à perdre, sédentaires, peur de se blesser, ont déjà échoué.
+Tu maîtrises : programmes débutants, nutrition simple, suivi, sécurité, psychologie de la motivation.
+Réponds en français, avec bienveillance et encouragement. Sois direct et concret. Max 3 paragraphes courts.`;
+
+  let widgetHistory = [];
+  let widgetOpen = false;
+  let widgetLoading = false;
+
+  function toggleWidget() {
+    widgetOpen = !widgetOpen;
+    const panel = document.getElementById('benstart-widget-panel');
+    if (widgetOpen) { panel.classList.add('open'); document.getElementById('widget-input').focus(); }
+    else { panel.classList.remove('open'); }
+  }
+
+  function openWidget() {
+    widgetOpen = false; toggleWidget();
+  }
+
+  function handleWidgetKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendWidgetMessage(); }
+  }
+
+  async function sendWidgetMessage() {
+    const input = document.getElementById('widget-input');
+    const text = input.value.trim();
+    if (!text || widgetLoading) return;
+    input.value = '';
+    widgetLoading = true;
+    document.getElementById('widget-send-btn').disabled = true;
+
+    addWidgetMessage('user', text);
+    widgetHistory.push({ role: 'user', content: text });
+
+    const typingEl = addWidgetTyping();
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system: SYSTEM_PROMPT,
+          messages: widgetHistory,
+        }),
+      });
+      const data = await res.json();
+      const reply = data.reply || 'Désolé, une erreur est survenue.';
+      typingEl.remove();
+      addWidgetMessage('bot', reply);
+      widgetHistory.push({ role: 'assistant', content: reply });
+    } catch {
+      typingEl.remove();
+      addWidgetMessage('bot', 'Une erreur est survenue. Réessayez dans un instant.');
+    } finally {
+      widgetLoading = false;
+      document.getElementById('widget-send-btn').disabled = false;
+      input.focus();
+    }
+  }
+
+  function addWidgetMessage(role, text) {
+    const container = document.getElementById('widget-messages');
+    const div = document.createElement('div');
+    div.className = `widget-msg ${role}`;
+    if (role === 'bot') div.innerHTML = `<strong>BenStart Coach</strong>${text}`;
+    else div.textContent = text;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div;
+  }
+
+  function addWidgetTyping() {
+    const container = document.getElementById('widget-messages');
+    const div = document.createElement('div');
+    div.className = 'widget-typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+    return div;
+  }
+</script>
+</body>
+</html>
