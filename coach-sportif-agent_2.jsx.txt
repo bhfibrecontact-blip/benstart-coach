@@ -1,0 +1,419 @@
+import { useState, useRef, useEffect } from "react";
+
+const SYSTEM_PROMPT = `Tu es BenStart Coach, un agent IA expert en perte de poids pour débutants absolus. Tu travailles avec des personnes qui n'ont jamais fait de sport ou qui ont arrêté depuis longtemps.
+
+Ta MICRO-NICHE précise : Hommes et femmes de 25-45 ans, en surpoids (10 à 30kg à perdre), sédentaires, qui ont peur de se blesser, qui ont déjà échoué avec des régimes, et qui cherchent une transformation durable sans se détruire.
+
+Tu maîtrises parfaitement :
+🏋️ PROGRAMMES : Séances débutant 30-45min, progression sur 12 semaines, exercices au poids du corps, cardio doux (marche, vélo, natation), HIIT débutant adapté
+🥗 NUTRITION : Déficit calorique modéré (300-500 kcal), règle 80/20, repas simples et rapides, recettes saines accessibles, gestion des fringales et des écarts
+📋 SUIVI : Bilan initial, mensurations, photos avant/après, check-in hebdomadaire, ajustement si stagnation
+🛡️ SÉCURITÉ : Questionnaire PAR-Q, échauffement, récupération, prévention blessures, signaux d'alerte
+🧠 PSYCHOLOGIE : Motivation durable, gestion des rechutes, construction de l'habitude, mindset positif
+
+Tu réponds toujours en français avec bienveillance et encouragement. Tu es direct, pratique et concret. Tu donnes des exemples précis. Tu rassures sans mentir sur les délais (perte de poids réaliste = 0.5 à 1kg/semaine). Tu utilises des emojis avec parcimonie pour rendre tes réponses vivantes mais professionnelles.
+
+Si quelqu'un mentionne une douleur physique, blessure ou condition médicale, tu recommandes toujours de consulter un médecin avant de commencer.`;
+
+const suggestions = [
+  { icon: "🎯", text: "Créer mon programme débutant 12 semaines" },
+  { icon: "🥗", text: "Plan nutrition simple pour maigrir" },
+  { icon: "⚖️", text: "Combien de calories je dois manger ?" },
+  { icon: "💪", text: "Exercices à faire chez soi sans matériel" },
+  { icon: "😔", text: "Je n'arrive pas à rester motivé(e)" },
+  { icon: "📏", text: "Comment mesurer mes progrès vraiment ?" },
+];
+
+const stats = [
+  { value: "0.5-1kg", label: "perte/semaine réaliste" },
+  { value: "12 sem", label: "pour voir de vrais résultats" },
+  { value: "3x/sem", label: "minimum pour commencer" },
+];
+
+export default function CoachSportifAgent() {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [started, setStarted] = useState(false);
+  const bottomRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  const sendMessage = async (text) => {
+    const userMessage = text || input.trim();
+    if (!userMessage || loading) return;
+    setInput("");
+    setStarted(true);
+
+    const newMessages = [...messages, { role: "user", content: userMessage }];
+    setMessages(newMessages);
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json',
+  'x-api-key': 'sk-ant-COLLE-TA-CLE-ICI',
+  'anthropic-version': '2023-06-01',
+},
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: bonjor,
+        }),
+      });
+      const data = await response.json();
+      const reply = data.content?.map(b => b.text || "").join("") || "Désolé, une erreur s'est produite.";
+      setMessages([...newMessages, { role: "assistant", content: reply }]);
+    } catch {
+      setMessages([...newMessages, { role: "assistant", content: "Une erreur s'est produite. Veuillez réessayer." }]);
+    } finally {
+      setLoading(false);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "#f7f5f0",
+      fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
+      display: "flex",
+      flexDirection: "column",
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+
+      {/* Header */}
+      <header style={{
+        background: "#1a1a2e",
+        padding: "0 24px",
+        position: "sticky", top: 0, zIndex: 20,
+        boxShadow: "0 2px 20px rgba(0,0,0,0.15)",
+      }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 0", display: "flex", alignItems: "center", gap: 14 }}>
+          {/* Logo */}
+          <div style={{
+            width: 44, height: 44, borderRadius: 12,
+            background: "linear-gradient(135deg, #e8534a, #f97316)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+            boxShadow: "0 4px 14px rgba(232,83,74,0.4)",
+          }}>
+            <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="9" r="6" fill="white"/>
+              <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+              <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+              <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+              <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+              <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+              <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+              <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+            </svg>
+          </div>
+
+          <div>
+            <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800, fontSize: 17, color: "#fff", letterSpacing: "-0.02em" }}>
+              BenStart <span style={{ color: "#f97316" }}>Coach</span>
+            </div>
+            <div style={{ fontSize: 11, color: "#8888aa", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>
+              Perte de poids · Débutants
+            </div>
+          </div>
+
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{
+              background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.3)",
+              borderRadius: 20, padding: "4px 12px", fontSize: 12, color: "#f97316", fontWeight: 500,
+            }}>
+              🎯 Micro-niche spécialisée
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main */}
+      <main style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+
+          {/* Hero - shown before first message */}
+          {!started && (
+            <div>
+              {/* Hero banner */}
+              <div style={{
+                background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%)",
+                borderRadius: "0 0 32px 32px",
+                padding: "40px 32px 48px",
+                marginBottom: 32,
+                position: "relative",
+                overflow: "hidden",
+              }}>
+                {/* Decorative circles */}
+                <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(249,115,22,0.08)", pointerEvents: "none" }} />
+                <div style={{ position: "absolute", bottom: -60, left: -30, width: 180, height: 180, borderRadius: "50%", background: "rgba(232,83,74,0.06)", pointerEvents: "none" }} />
+
+                <div style={{ position: "relative", zIndex: 1 }}>
+                  <div style={{
+                    display: "inline-flex", alignItems: "center", gap: 6,
+                    background: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.3)",
+                    borderRadius: 20, padding: "4px 14px", marginBottom: 20,
+                  }}>
+                    <span style={{ fontSize: 10, color: "#f97316", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                      ✦ BenStart Coach — Votre coach IA personnel
+                    </span>
+                  </div>
+
+                  <h1 style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: 32, fontWeight: 800, color: "#fff",
+                    margin: "0 0 12px", lineHeight: 1.2, letterSpacing: "-0.02em",
+                  }}>
+                    Perdez du poids<br />
+                    <span style={{ color: "#f97316" }}>sans vous blesser</span>
+                  </h1>
+
+                  <p style={{ color: "#8888bb", fontSize: 15, lineHeight: 1.7, margin: "0 0 28px", maxWidth: 420 }}>
+                    Spécialisé pour les débutants qui veulent une transformation durable. Programmes, nutrition et suivi personnalisé 24h/24.
+                  </p>
+
+                  {/* Stats */}
+                  <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+                    {stats.map((s, i) => (
+                      <div key={i}>
+                        <div style={{ fontSize: 20, fontWeight: 700, color: "#f97316", fontFamily: "'Playfair Display', serif" }}>{s.value}</div>
+                        <div style={{ fontSize: 11, color: "#6666aa", textTransform: "uppercase", letterSpacing: "0.05em" }}>{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Suggestions */}
+              <div style={{ marginBottom: 24 }}>
+                <p style={{ fontSize: 13, color: "#888", fontWeight: 500, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                  Questions fréquentes
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+                  {suggestions.map((s, i) => (
+                    <button key={i} onClick={() => sendMessage(s.text)}
+                      style={{
+                        background: "#fff", border: "1.5px solid #e8e4dc",
+                        borderRadius: 14, padding: "14px 16px",
+                        cursor: "pointer", textAlign: "left",
+                        display: "flex", alignItems: "center", gap: 10,
+                        transition: "all 0.18s", fontFamily: "inherit",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = "#f97316";
+                        e.currentTarget.style.boxShadow = "0 4px 16px rgba(249,115,22,0.15)";
+                        e.currentTarget.style.transform = "translateY(-2px)";
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = "#e8e4dc";
+                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
+                        e.currentTarget.style.transform = "translateY(0)";
+                      }}
+                    >
+                      <span style={{ fontSize: 20 }}>{s.icon}</span>
+                      <span style={{ fontSize: 13.5, color: "#333", fontWeight: 500, lineHeight: 1.4 }}>{s.text}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Micro-niche tag */}
+              <div style={{
+                background: "#fff", border: "1.5px solid #e8e4dc",
+                borderRadius: 16, padding: "16px 20px", marginBottom: 24,
+                display: "flex", alignItems: "center", gap: 12,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              }}>
+                <div style={{ fontSize: 28 }}>🎯</div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 2 }}>Micro-niche ciblée</div>
+                  <div style={{ fontSize: 12.5, color: "#888", lineHeight: 1.5 }}>
+                    Conçu pour : <strong style={{ color: "#f97316" }}>adultes 25-45 ans</strong> · <strong style={{ color: "#f97316" }}>10-30kg à perdre</strong> · <strong style={{ color: "#f97316" }}>débutants sédentaires</strong> · <strong style={{ color: "#f97316" }}>peur de se blesser</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Messages */}
+          <div style={{ paddingBottom: 16 }}>
+            {messages.map((msg, i) => (
+              <div key={i} style={{
+                display: "flex", gap: 12, marginBottom: 20,
+                flexDirection: msg.role === "user" ? "row-reverse" : "row",
+                alignItems: "flex-start",
+                animation: "fadeUp 0.3s ease",
+              }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: msg.role === "user"
+                    ? "#1a1a2e"
+                    : "linear-gradient(135deg, #e8534a, #f97316)",
+                  boxShadow: msg.role === "assistant" ? "0 4px 14px rgba(249,115,22,0.35)" : "none",
+                }}>
+                  {msg.role === "user" ? "🧑" : (
+                    <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+                      <circle cx="32" cy="9" r="6" fill="white"/>
+                      <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+                      <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+                      <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+                      <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+                      <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+                      <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+                      <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+                    </svg>
+                  )}
+                </div>
+                <div style={{
+                  maxWidth: "76%",
+                  background: msg.role === "user" ? "#1a1a2e" : "#fff",
+                  border: msg.role === "user" ? "none" : "1.5px solid #e8e4dc",
+                  borderRadius: msg.role === "user" ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+                  padding: "13px 17px",
+                  lineHeight: 1.75,
+                  fontSize: 14.5,
+                  color: msg.role === "user" ? "#f0f0f0" : "#2a2a3e",
+                  whiteSpace: "pre-wrap",
+                  boxShadow: msg.role === "assistant" ? "0 2px 12px rgba(0,0,0,0.06)" : "none",
+                }}>
+                  {msg.role === "assistant" && (
+                    <div style={{ fontSize: 11, color: "#f97316", fontWeight: 600, marginBottom: 6, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                      BenStart Coach
+                    </div>
+                  )}
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "flex-start" }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: "linear-gradient(135deg, #e8534a, #f97316)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 4px 14px rgba(249,115,22,0.35)",
+                }}>
+                  <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="9" r="6" fill="white"/>
+                    <rect x="25" y="17" width="14" height="16" rx="4" fill="white"/>
+                    <path d="M25 20 Q11 22 9 28 Q7 34 13 36 Q17 38 21 34 Q23 30 25 26Z" fill="white"/>
+                    <rect x="5" y="33" width="10" height="7" rx="3" fill="white"/>
+                    <path d="M39 20 Q53 22 55 28 Q57 34 51 36 Q47 38 43 34 Q41 30 39 26Z" fill="white"/>
+                    <rect x="49" y="33" width="10" height="7" rx="3" fill="white"/>
+                    <rect x="25" y="32" width="6" height="20" rx="3" fill="white"/>
+                    <rect x="33" y="32" width="6" height="20" rx="3" fill="white"/>
+                  </svg>
+                </div>
+                <div style={{
+                  background: "#fff", border: "1.5px solid #e8e4dc",
+                  borderRadius: "4px 16px 16px 16px",
+                  padding: "16px 20px", display: "flex", gap: 5, alignItems: "center",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                }}>
+                  {[0, 1, 2].map(j => (
+                    <div key={j} style={{
+                      width: 7, height: 7, borderRadius: "50%",
+                      background: "#f97316",
+                      animation: "bounce 1.2s ease-in-out infinite",
+                      animationDelay: `${j * 0.18}s`,
+                    }} />
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+        </div>
+      </main>
+
+      {/* Input */}
+      <footer style={{
+        background: "#fff",
+        borderTop: "1.5px solid #e8e4dc",
+        padding: "16px",
+        position: "sticky", bottom: 0, zIndex: 10,
+        boxShadow: "0 -4px 20px rgba(0,0,0,0.06)",
+      }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+            <div style={{ flex: 1, position: "relative" }}>
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder="Posez votre question à BenStart Coach..."
+                rows={1}
+                style={{
+                  width: "100%", resize: "none",
+                  background: "#f7f5f0",
+                  border: "1.5px solid #e0dbd2",
+                  borderRadius: 14, padding: "13px 16px",
+                  color: "#1a1a2e", fontSize: 14.5,
+                  fontFamily: "inherit", outline: "none",
+                  lineHeight: 1.5, boxSizing: "border-box",
+                  transition: "border-color 0.2s, box-shadow 0.2s",
+                }}
+                onFocus={e => {
+                  e.target.style.borderColor = "#f97316";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.12)";
+                }}
+                onBlur={e => {
+                  e.target.style.borderColor = "#e0dbd2";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
+            <button
+              onClick={() => sendMessage()}
+              disabled={!input.trim() || loading}
+              style={{
+                width: 48, height: 48, borderRadius: 14, border: "none",
+                cursor: input.trim() && !loading ? "pointer" : "not-allowed",
+                background: input.trim() && !loading
+                  ? "linear-gradient(135deg, #e8534a, #f97316)"
+                  : "#e8e4dc",
+                fontSize: 18, transition: "all 0.2s", flexShrink: 0,
+                boxShadow: input.trim() && !loading ? "0 4px 14px rgba(249,115,22,0.4)" : "none",
+                transform: input.trim() && !loading ? "scale(1)" : "scale(0.95)",
+              }}
+            >➤</button>
+          </div>
+          <p style={{ textAlign: "center", fontSize: 11, color: "#bbb", marginTop: 8, marginBottom: 0 }}>
+            Entrée pour envoyer · Ce coach IA ne remplace pas un avis médical
+          </p>
+        </div>
+      </footer>
+
+      <style>{`
+        @keyframes bounce {
+          0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+          30% { transform: translateY(-7px); opacity: 1; }
+        }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        * { box-sizing: border-box; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e0dbd2; border-radius: 3px; }
+        textarea { overflow: hidden; }
+      `}</style>
+    </div>
+  );
+}
