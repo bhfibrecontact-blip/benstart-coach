@@ -605,13 +605,24 @@ Réponds en français, avec bienveillance et encouragement. Sois direct et concr
 
     try {
       const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system: SYSTEM_PROMPT,
-          messages:Bnjour coach,
-        }),
-      });
+  method: 'POST',
+  headers: {
+    'x-api-key': 'sk-ant-TA-CLE-ICI',
+    'anthropic-version': '2023-06-01',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: "claude-3-haiku-20240307",
+    max_tokens: 200,
+    system: SYSTEM_PROMPT,
+    messages: [
+      {
+        role: "user",
+        content: "Bonjour Claude"
+      }
+    ]
+  })
+ });
       const data = await res.json();
       const reply = data.reply || 'Désolé, une erreur est survenue.';
       typingEl.remove();
